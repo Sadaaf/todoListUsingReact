@@ -8,6 +8,7 @@ import shortid from "shortid";
 
 class TodoList extends React.Component {
   state = {
+    filter: "all",
     view: "list",
     isOpenTodoForm: false,
     searchQuery: "",
@@ -48,7 +49,9 @@ class TodoList extends React.Component {
   toggleForm = () => {
     this.setState({ isOpenTodoForm: !this.state.isOpenTodoForm });
   };
-  handleSearch = () => {};
+  handleSearch = (value) => {
+    this.setState({ searchQuery: value });
+  };
   createTodo = (todo) => {
     todo.id = shortid.generate();
     todo.time = new Date();
@@ -59,28 +62,64 @@ class TodoList extends React.Component {
     this.setState({ todos });
     this.toggleForm();
   };
-  handleFilter = () => {};
+
+  handleFilter = (value) => {
+    this.setState({ filter: value });
+  };
+
   changeView = (event) => {
     this.setState({ view: event.target.value });
   };
-  clearSelected = () => {};
-  clearCompleted = () => {};
-  reset = () => {};
+  clearSelected = () => {
+    const todos = this.state.todos.filter((todo) => !todo.isSelected);
+    this.setState({ todos });
+  };
+  clearCompleted = () => {
+    const todos = this.state.todos.filter((todo) => !todo.isComplete);
+    this.setState({ todos });
+  };
+  reset = () => {
+    this.setState({
+      filter: "all",
+      searchQuery: "",
+      view: "list",
+      isOpenTodoForm: false,
+    });
+  };
 
-  getView = () =>
-    this.state.view === "list" ? (
+  performSearch = () =>
+    this.state.todos.filter((todo) =>
+      todo.text.toLowerCase().includes(this.state.searchQuery.toLowerCase())
+    );
+
+  performFilter = (todos) => {
+    const { filter } = this.state;
+    if (filter === "completed") {
+      return todos.filter((todo) => todo.isComplete);
+    } else if (filter === "running") {
+      return todos.filter((todo) => !todo.isComplete);
+    } else {
+      return todos;
+    }
+  };
+
+  getView = () => {
+    let todos = this.performSearch();
+    todos = this.performFilter(todos);
+    return this.state.view === "list" ? (
       <ListView
-        todos={this.state.todos}
+        todos={todos}
         toggleComplete={this.toggleComplete}
         toggleSelect={this.toggleSelect}
       />
     ) : (
       <TableView
-        todos={this.state.todos}
+        todos={todos}
         toggleComplete={this.toggleComplete}
         toggleSelect={this.toggleSelect}
       />
     );
+  };
 
   render() {
     return (
