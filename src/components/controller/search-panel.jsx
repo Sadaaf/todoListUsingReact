@@ -2,12 +2,12 @@ import React from "react";
 import { Input, Button } from "reactstrap";
 import PropTypes from "prop-types";
 
-const SearchPanel = ({ searchQuery }, handleSearch, toggleForm) => {
+const SearchPanel = ({ searchQuery, handleSearch, toggleForm }) => {
   return (
     <div className="d-flex">
       <Input
-        placeholder="Enter your serach query"
-        className="mr-3"
+        placeholder="Enter your search query"
+        className="me-3"
         value={searchQuery}
         onChange={(event) => handleSearch(event.target.value)}
       />

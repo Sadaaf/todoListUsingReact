@@ -35,8 +35,8 @@ class CreateTodoForm extends React.Component {
             value={this.state.description}
             onChange={this.handleChange}
           />
-          <Button type="submit">Create Task</Button>
         </FormGroup>
+        <Button type="submit">Create Task</Button>
       </Form>
     );
   }
